@@ -1,0 +1,254 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<MorpheusModel version="4">
+    <Description>
+        <Details>Reparametrized YAP signaling model, based on
+Full title: Spatio-temporal model of YAP signaling in hepatocytes after partial hepatectomy.
+Date: 28.6.2018
+Author: lutz.brusch@tu-dresden.de
+Software: Morpheus (open-source), download from https://morpheus.gitlab.io
+Reference: This model is described in the peer-reviewed publication "Bile canaliculi remodeling activates YAP via the actin cytoskeleton during liver regeneration" by Kirstin Meyer, Hernan Morales-Navarrete, Sarah Seifert, Michaela Wilsch-Braeuninger, Uta Dahmen, Elly M. Tanaka, Lutz Brusch, Yannis Kalaidzidis and Marino Zerial. Molecular Systems Biology 
+16:e8985, 2020.
+https://doi.org/10.15252/msb.20198985
+</Details>
+        <Title>YAP signaling</Title>
+    </Description>
+    <Space>
+        <Lattice class="square">
+            <Neighborhood>
+                <Order>1</Order>
+            </Neighborhood>
+            <Size symbol="size" value="30, 3, 0"/>
+        </Lattice>
+        <SpaceSymbol symbol="space"/>
+    </Space>
+    <Time>
+        <StartTime value="0"/>
+        <StopTime symbol="stop" value="5"/>
+        <TimeSymbol symbol="time"/>
+    </Time>
+    <CellTypes>
+        <CellType name="Hepatocyte" class="biological">
+            <Property symbol="SENSOR" value="0.245" name="concentration of SENSOR"/>
+            <Property symbol="inact_SENSOR" value="5.255" name="concentration of inactive SENSOR"/>
+            <Property symbol="YAP" value="1" name="concentration of YAP"/>
+            <Property symbol="inact_YAP" value="0" name="concentration of inactive YAP"/>
+            <Property symbol="inact_YAP_SF" value="0" name="concentration of inactive YAP bound to SF"/>
+            <Property symbol="N_YAP" value="1" name="concentration of nuclear YAP"/>
+            <Property symbol="Tension" value="1"/>
+            <Property symbol="s" value="if(cell.id==1,1.246692,&#xa;if(cell.id==2,1.383782,&#xa;if(cell.id==3,1.460713,&#xa;if(cell.id==4,1.516818,&#xa;if(cell.id==5,1.546580,&#xa;if(cell.id==6,1.650898,&#xa;if(cell.id==7,1.662168,&#xa;if(cell.id==8,1.613539,&#xa;if(cell.id==9,1.554600,&#xa;if(cell.id==10,1.324019,&#xa;1))))))))))" name="zonated (i.e. cell-dependent) YAP synthesis level"/>
+            <Event trigger="on change" name="Tension for time t closer to 0.8d than to other measurements" time-step="0.05">
+                <Condition>time>0.4</Condition>
+                <Rule symbol-ref="Tension">
+                    <Expression>if(cell.id==1,1.8279930944312834,&#xd;
+if(cell.id==2,1.7866460754759526,&#xd;
+if(cell.id==3,1.8374519069180288,&#xd;
+if(cell.id==4,1.8640351995565263,&#xd;
+if(cell.id==5,1.8706834857072998,&#xd;
+if(cell.id==6,1.8941858816263410,&#xd;
+if(cell.id==7,1.8511397598872272,&#xd;
+if(cell.id==8,1.9135216039396319,&#xd;
+if(cell.id==9,1.9145071129239710,&#xd;
+if(cell.id==10,1.8153404444156003,&#xd;
+1))))))))))</Expression>
+                </Rule>
+            </Event>
+            <Event trigger="on change" name="Tension for time t closer to 1.5d than to other measurements" time-step="0.05">
+                <Condition>time>1.15</Condition>
+                <Rule symbol-ref="Tension">
+                    <Expression>if(cell.id==1,1.9807223334150590,&#xd;
+if(cell.id==2,1.9130780850583866,&#xd;
+if(cell.id==3,1.9643577716468286,&#xd;
+if(cell.id==4,2.0020827404251120,&#xd;
+if(cell.id==5,2.0252154507264140,&#xd;
+if(cell.id==6,2.0703197134079440,&#xd;
+if(cell.id==7,1.9915999174723278,&#xd;
+if(cell.id==8,2.0046213799240973,&#xd;
+if(cell.id==9,1.9540901073551358,&#xd;
+if(cell.id==10,1.8753435897018356,&#xd;
+1))))))))))</Expression>
+                </Rule>
+            </Event>
+            <Event trigger="on change" name="Tension for time t closer to 2.0d than to other measurements" time-step="0.05">
+                <Condition>time>1.75</Condition>
+                <Rule symbol-ref="Tension">
+                    <Expression>if(cell.id==1,2.0217009184038360,&#xd;
+if(cell.id==2,1.9258181971655592,&#xd;
+if(cell.id==3,1.9518589890960070,&#xd;
+if(cell.id==4,1.9123363331127760,&#xd;
+if(cell.id==5,2.0319328550271623,&#xd;
+if(cell.id==6,2.0158606286091496,&#xd;
+if(cell.id==7,1.9434430184290816,&#xd;
+if(cell.id==8,1.8907841188362082,&#xd;
+if(cell.id==9,1.9473574849407167,&#xd;
+if(cell.id==10,1.8715472190966007,&#xd;
+1))))))))))</Expression>
+                </Rule>
+            </Event>
+            <Event trigger="on change" name="Tension for time t closer to 3.0d than to other measurements" time-step="0.05">
+                <Condition>time>2.5</Condition>
+                <Rule symbol-ref="Tension">
+                    <Expression>if(cell.id==1,1.8597267890032976,&#xd;
+if(cell.id==2,1.7814702267887177,&#xd;
+if(cell.id==3,1.8292379408251978,&#xd;
+if(cell.id==4,1.8488155708410638,&#xd;
+if(cell.id==5,1.8536661678277864,&#xd;
+if(cell.id==6,1.8836145987139055,&#xd;
+if(cell.id==7,1.8442276337980785,&#xd;
+if(cell.id==8,1.8136740374044704,&#xd;
+if(cell.id==9,1.8868282103886570,&#xd;
+if(cell.id==10,1.8015329680486330,&#xd;
+1))))))))))</Expression>
+                </Rule>
+            </Event>
+            <Event trigger="on change" name="Tension for time t closer to 5.0d than to other measurements" time-step="0.05">
+                <Condition>time>4.0</Condition>
+                <Rule symbol-ref="Tension">
+                    <Expression>if(cell.id==1,1.9088767623308390,&#xd;
+if(cell.id==2,1.8488496952244589,&#xd;
+if(cell.id==3,1.8616629446112190,&#xd;
+if(cell.id==4,1.8244687794620162,&#xd;
+if(cell.id==5,1.8557929833228486,&#xd;
+if(cell.id==6,1.8447542721681303,&#xd;
+if(cell.id==7,1.7726695922335742,&#xd;
+if(cell.id==8,1.7074409071843903,&#xd;
+if(cell.id==9,1.7730171801027250,&#xd;
+if(cell.id==10,1.7408530847107613,&#xd;
+1))))))))))</Expression>
+                </Rule>
+            </Event>
+            <System time-step="0.05" solver="adaptive45">
+                <DiffEqn symbol-ref="SENSOR">
+                    <Expression>k1*(Tension * inact_SENSOR / (K_M1 + inact_SENSOR) - k2 * SENSOR / (K_M2 + SENSOR))</Expression>
+                </DiffEqn>
+                <DiffEqn symbol-ref="inact_SENSOR">
+                    <Expression>k1*( - Tension * inact_SENSOR / (K_M1 + inact_SENSOR) + k2 * SENSOR / (K_M2 + SENSOR))</Expression>
+                </DiffEqn>
+                <DiffEqn symbol-ref="YAP">
+                    <Expression>k5 * ( inact_YAP - k4 * k3_0 * YAP * inact_SENSOR - k10 * k3_0 * YAP + k3_0 * s ) + 
+k8 * ( - k9 * YAP + N_YAP * N/C )</Expression>
+                </DiffEqn>
+                <DiffEqn symbol-ref="inact_YAP">
+                    <Expression>k5 * ( k4 * k3_0 * YAP * inact_SENSOR - inact_YAP - k11 * k3_0 * inact_YAP) +
+k7 * ( - k6 * inact_YAP + inact_YAP_SF )</Expression>
+                </DiffEqn>
+                <DiffEqn symbol-ref="inact_YAP_SF">
+                    <Expression>k7 * ( k6 * inact_YAP - inact_YAP_SF )</Expression>
+                </DiffEqn>
+                <DiffEqn symbol-ref="N_YAP">
+                    <Expression>k8 * ( k9 * YAP * C/N - N_YAP )</Expression>
+                </DiffEqn>
+            </System>
+            <Constant symbol="N" value="860" name="nucleus volume in square micron"/>
+            <Constant symbol="C" value="5450" name="cytoplasm volume in square micron"/>
+            <Constant symbol="k1" value="100" name="1/time scale of SENSOR activation"/>
+            <Constant symbol="K_M1" value="0.0008" name="K_M value"/>
+            <Constant symbol="k2" value="2.02" name="ratio of V_maxs for SENSOR inactivation over activation"/>
+            <Constant symbol="K_M2" value="0.25" name="K_M value"/>
+            <Constant symbol="k3_0" value="1.7" name="YAP synthesis rate factor normalized by YAP activation rate k5"/>
+            <Constant symbol="k4" value="0.11" name="YAP inactivation rate normalized by YAP activation rate k5"/>
+            <Constant symbol="k5" value="100" name="YAP activation rate"/>
+            <Constant symbol="k6" value="0.18" name="ratio of inact_YAP binding to SF by inact_YAP unbinding from SF"/>
+            <Constant symbol="k7" value="100" name="inact_YAP unbinding from SF"/>
+            <Constant symbol="k8" value="100" name="nuclear export"/>
+            <Constant symbol="k9" value="0.17" name="rate ratio of nuclear import by export of YAP"/>
+            <Constant symbol="k10" value="1.1" name="YAP degradation normalized by YAP activation rate k5"/>
+            <Constant symbol="k11" value="18" name="inact_YAP degradation rate normalized by YAP activation rate k5"/>
+            <Constant symbol="intensity_normalization_nuclear" value="1" name="free choice of YAP unit"/>
+            <Constant symbol="intensity_normalization_total" value="1.0" name="fit parameter to account for different normalization of two observables"/>
+            <Property symbol="YAP_nuclear_observable" value="intensity_normalization_nuclear * N_YAP"/>
+            <Equation symbol-ref="YAP_nuclear_observable">
+                <Expression>intensity_normalization_nuclear * N_YAP</Expression>
+            </Equation>
+            <Property symbol="YAP_total_observable" value="intensity_normalization_total * (C * (YAP + inact_YAP + inact_YAP_SF) + N * N_YAP) / (C + N)"/>
+            <Equation symbol-ref="YAP_total_observable">
+                <Expression>intensity_normalization_total * (C * (YAP + inact_YAP + inact_YAP_SF) + N * N_YAP) / (C + N)</Expression>
+            </Equation>
+        </CellType>
+    </CellTypes>
+    <CellPopulations>
+        <Population type="Hepatocyte" size="10">
+            <InitCellObjects mode="distance">
+                <Arrangement repetitions="10, 1, 1" displacements="3, 0, 0">
+                    <Box origin="0.0, 0.0, 0.0" size="3.0, 3.0, 1.0"/>
+                </Arrangement>
+            </InitCellObjects>
+        </Population>
+    </CellPopulations>
+    <Analysis>
+        <!--    <Disabled>
+        <Gnuplotter time-step="0.05" decorate="true">
+            <Terminal name="png"/>
+            <Plot title="nuclear YAP(x,t)">
+                <Cells value="YAP_nuclear_observable" max="1.7" min="0.9"/>
+            </Plot>
+            <Plot title="total YAP(x,t)">
+                <Cells value="YAP_total_observable" max="1.7" min="0.9"/>
+            </Plot>
+        </Gnuplotter>
+    </Disabled>
+-->
+        <Logger time-step="0.1">
+            <Input>
+                <Symbol symbol-ref="Tension"/>
+                <Symbol symbol-ref="YAP_nuclear_observable"/>
+                <Symbol symbol-ref="YAP_total_observable"/>
+            </Input>
+            <Output>
+                <TextOutput file-numbering="time"/>
+            </Output>
+            <!--    <Disabled>
+        <Plots>
+            <Disabled>
+                <Plot title="Fig.S9a: Tension(x,t)" file-numbering="time" time-step="0.8">
+                    <Style style="lines"/>
+                    <Terminal terminal="png"/>
+                    <X-axis>
+                        <Symbol symbol-ref="cell.id"/>
+                    </X-axis>
+                    <Y-axis minimum="0.9" maximum="2.5">
+                        <Symbol symbol-ref="Tension"/>
+                    </Y-axis>
+                    <Color-bar>
+                        <Symbol symbol-ref="time"/>
+                    </Color-bar>
+                </Plot>
+            </Disabled>
+            <Plot title="Fig.S9c: nuclear YAP(x,t)" file-numbering="time" time-step="-1">
+                <Style style="lines"/>
+                <Terminal terminal="png"/>
+                <X-axis>
+                    <Symbol symbol-ref="cell.id"/>
+                </X-axis>
+                <Y-axis minimum="0.0" maximum="2.0">
+                    <Symbol symbol-ref="YAP_nuclear_observable"/>
+                </Y-axis>
+                <Color-bar>
+                    <Symbol symbol-ref="time"/>
+                </Color-bar>
+            </Plot>
+            <Plot title="Fig.S9d: total cellular YAP(x,t)" file-numbering="time" time-step="-1">
+                <Style style="lines"/>
+                <Terminal terminal="png"/>
+                <X-axis>
+                    <Symbol symbol-ref="cell.id"/>
+                </X-axis>
+                <Y-axis minimum="0.0" maximum="2.0">
+                    <Symbol symbol-ref="YAP_total_observable"/>
+                </Y-axis>
+                <Color-bar>
+                    <Symbol symbol-ref="time"/>
+                </Color-bar>
+            </Plot>
+        </Plots>
+    </Disabled>
+-->
+            <!--    <Disabled>
+        <Restriction>
+            <Celltype celltype="Hepatocyte"/>
+        </Restriction>
+    </Disabled>
+-->
+        </Logger>
+        <DependencyGraph format="svg" reduced="false"/>
+    </Analysis>
+</MorpheusModel>

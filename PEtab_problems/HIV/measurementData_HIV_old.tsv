@@ -1,0 +1,5 @@
+observableId	simulationConditionId	measurement
+loose_Mot_infected	condition1	loose_Mot_infected.csv
+loose_Mot_target	condition1	loose_Mot_target.csv
+loose_MSD_infected	condition1	loose_MSD_infected.csv
+loose_MSD_target	condition1	loose_MSD_target.csv

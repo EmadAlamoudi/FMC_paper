@@ -1,0 +1,343 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<MorpheusModel version="4">
+    <Description>
+        <Title>Tumour Spheroid</Title>
+        <Details>following Jagielle et al. Cell Systems 4, 194–206.e1–e9, 2017
+set up for 2D but in principle ready for 3D as well
+</Details>
+    </Description>
+    <Global>
+        <Field value="0.0" symbol="e" name="ECM">
+            <BoundaryValue value="0.0" boundary="x"/>
+            <BoundaryValue value="0.0" boundary="-x"/>
+            <BoundaryValue value="0.0" boundary="y"/>
+            <BoundaryValue value="0.0" boundary="-y"/>
+        </Field>
+        <System solver="Dormand-Prince [adaptive, O(5)]">
+            <DiffEqn symbol-ref="e">
+                <Expression>ke_pro*c-ke_deg*e</Expression>
+            </DiffEqn>
+        </System>
+        <Constant value="3.2e-2" symbol="k_div_max"/>
+        <Constant value="1e-3" symbol="k_re_max"/>
+        <Constant value="2" symbol="m_g"/>
+        <Constant value="10" symbol="m_d"/>
+        <Constant value="3.0e-3" symbol="e_div"/>
+        <Constant value="1.3e2/length_unit" symbol="L_div"/>
+        <Constant value="16" symbol="V_target"/>
+        <!--    <Disabled>
+        <Constant value="0.9" symbol="S_target"/>
+    </Disabled>
+-->
+        <Constant value="0.0" symbol="c" name="indicator of Prolif_cell or Quiesc_cell"/>
+        <Constant value="0.0" symbol="c_nec"/>
+        <Constant value="1e-1" symbol="kg"/>
+        <Constant value="6.8e-2" symbol="kmg"/>
+        <Constant value="1.2e2/length_unit" symbol="L_init"/>
+        <Constant value="7.5e-1" symbol="q_init"/>
+        <Constant value="5.0e-4" symbol="ke_pro"/>
+        <Constant value="3.3e-3" symbol="ke_deg"/>
+        <Variable value="0" symbol="V_spheroid"/>
+        <Mapper name="V_spheroid">
+            <Input value="cell.volume"/>
+            <Output symbol-ref="V_spheroid" mapping="sum"/>
+        </Mapper>
+        <Function symbol="R">
+            <Expression>max(L_init,sqrt(V_spheroid/pi))*4</Expression>
+        </Function>
+        <Constant value="16.8/sqrt(4*V_target/pi)" symbol="length_unit"/>
+        <Constant value="pi*L_init^2/V_target" symbol="N_init"/>
+    </Global>
+    <Space>
+        <Lattice class="square">
+            <Size value="500, 500, 0" symbol="size"/>
+            <BoundaryConditions>
+                <Condition type="constant" boundary="x"/>
+                <Condition type="constant" boundary="-x"/>
+                <Condition type="constant" boundary="y"/>
+                <Condition type="constant" boundary="-y"/>
+            </BoundaryConditions>
+            <Neighborhood>
+                <Order>1</Order>
+            </Neighborhood>
+        </Lattice>
+        <SpaceSymbol symbol="space"/>
+    </Space>
+    <Time>
+        <StartTime value="0"/>
+        <StopTime value="480" symbol="stoptime"/>
+        <TimeSymbol symbol="time"/>
+    </Time>
+    <CellTypes>
+        <CellType class="medium" name="medium">
+            <Constant value="0" symbol="cell.volume" tags="new"/>
+            <Property value="0.0" symbol="L"/>
+            <Property value="0.0" symbol="medium_contact" tags="new"/>
+            <Property value="0.0" symbol="m"/>
+        </CellType>
+        <CellType class="biological" name="Quiesc_cell">
+            <VolumeConstraint target="V_target" name="V_target" strength="1"/>
+            <ChangeCellType time-step="1.0" newCellType="Prolif_cell" name="-> Prolif_cell">
+                <Triggers>
+                    <Rule symbol-ref="prolif" name="p_re">
+                        <Expression>rand_uni(0,1) &lt; (exp(-L/L_div)*(e_cell>e_div))</Expression>
+                    </Rule>
+                </Triggers>
+                <Condition>rand_uni(0,1) &lt; k_re_max</Condition>
+            </ChangeCellType>
+            <Constant value="1" symbol="c" name="indicator for Global/Fields"/>
+            <Property value="0" symbol="e_cell_inter" name="intermediate for ECM"/>
+            <Mapper name="e_cell_inter">
+                <Input value="e"/>
+                <Output symbol-ref="e_cell_inter" mapping="average"/>
+            </Mapper>
+            <Property value="0" symbol="e_cell"/>
+            <Event trigger="on change" compute-time="on-execution" time-step="1" name="e_cell">
+                <Condition>1</Condition>
+                <Rule symbol-ref="e_cell">
+                    <Expression>e_cell_inter</Expression>
+                </Rule>
+            </Event>
+            <Property value="1" symbol="m"/>
+            <Property value="-1" symbol="prolif"/>
+            <Property value="0.0" symbol="medium_contact" tags="new"/>
+            <NeighborhoodReporter name="medium_contact" tags="new">
+                <Input value="cell.type == celltype.medium.id" scaling="cell" noflux-cell-medium="false"/>
+                <Output symbol-ref="medium_contact" mapping="maximum"/>
+            </NeighborhoodReporter>
+            <Property value="0.0" symbol="L"/>
+            <NeighborhoodReporter time-step="1.0" name="propagate distance">
+                <Input value="L" scaling="cell"/>
+                <Output symbol-ref="LTmp" mapping="minimum"/>
+            </NeighborhoodReporter>
+            <Property value="1000000" symbol="LTmp"/>
+            <System solver="Dormand-Prince [adaptive, O(5)]" time-step="1.0">
+                <Rule symbol-ref="L">
+                    <Expression>if(medium_contact==1,sqrt(4*cell.volume/pi),LTmp+sqrt(4*cell.volume/pi))</Expression>
+                </Rule>
+            </System>
+        </CellType>
+        <CellType class="biological" name="Prolif_cell">
+            <Property value="0" symbol="e_cell_inter" name="intermediate for ECM"/>
+            <Mapper name="e_cell_inter">
+                <Input value="e"/>
+                <Output symbol-ref="e_cell_inter" mapping="average"/>
+            </Mapper>
+            <Property value="0" symbol="e_cell"/>
+            <Event trigger="on change" compute-time="on-execution" time-step="1" name="e_cell">
+                <Condition>1</Condition>
+                <Rule symbol-ref="e_cell">
+                    <Expression>e_cell_inter</Expression>
+                </Rule>
+            </Event>
+            <Property value="1" symbol="m"/>
+            <Property value="1" symbol="prolif"/>
+            <VolumeConstraint target="V_target*(1+m>=m_g)" name="V_target*(1+m>=m_g)" strength="1"/>
+            <CellDivision division-plane="random" name="m == m_d">
+                <Condition>m == m_d*(e_cell>-1)</Condition>
+                <Triggers>
+                    <Rule symbol-ref="m">
+                        <Expression>1</Expression>
+                    </Rule>
+                    <!--    <Disabled>
+        <Rule symbol-ref="prolif">
+            <Expression>rand_uni(0,1) &lt; (exp(-L/L_div)*(e_cell>e_div)*(ka>ka_div)*(l_cell&lt;l_div)*(nwo_max>nwo))</Expression>
+        </Rule>
+    </Disabled>
+-->
+                    <Rule symbol-ref="prolif">
+                        <Expression>rand_uni(0,1) &lt; (exp(-L/L_div)*(e_cell>e_div))</Expression>
+                    </Rule>
+                </Triggers>
+            </CellDivision>
+            <ChangeCellType time-step="1.0" newCellType="Quiesc_cell" name="-> Quiesc_cell">
+                <Condition>prolif == 0</Condition>
+                <Triggers>
+                    <Rule symbol-ref="m">
+                        <Expression>1</Expression>
+                    </Rule>
+                </Triggers>
+            </ChangeCellType>
+            <Constant value="1" symbol="c" name="indicator for Global/Fields"/>
+            <Event trigger="on change" compute-time="on-execution" time-step="1" name="m -> m+1">
+                <Condition>1</Condition>
+                <!--    <Disabled>
+        <Rule symbol-ref="m">
+            <Expression>m+(rand_uni(0,1)&lt;(k_div_max*m_d*(1-0.5*(o_cell&lt;o_div))*(1-0.5*(w_cell>w_div))))</Expression>
+        </Rule>
+    </Disabled>
+-->
+                <Rule symbol-ref="m">
+                    <Expression>m+(rand_uni(0,1)&lt;k_div_max*m_d)</Expression>
+                </Rule>
+            </Event>
+            <Property value="0.0" symbol="medium_contact" tags="new"/>
+            <NeighborhoodReporter name="medium_contact" tags="new">
+                <Input value="cell.type == celltype.medium.id" scaling="cell" noflux-cell-medium="false"/>
+                <Output symbol-ref="medium_contact" mapping="maximum"/>
+            </NeighborhoodReporter>
+            <NeighborhoodReporter time-step="1.0" name="L-Neighbours">
+                <Input value="L" scaling="cell"/>
+                <Output symbol-ref="LTmp" mapping="minimum"/>
+            </NeighborhoodReporter>
+            <Property value="1000000" symbol="LTmp" name="temp for propagating distance"/>
+            <System solver="Dormand-Prince [adaptive, O(5)]" time-step="1.0">
+                <Rule symbol-ref="L">
+                    <Expression>if(medium_contact==1,sqrt(4*cell.volume/pi),LTmp+sqrt(4*cell.volume/pi))</Expression>
+                </Rule>
+            </System>
+            <Property value="0.0" symbol="L"/>
+        </CellType>
+    </CellTypes>
+    <CPM>
+        <Interaction default="0">
+            <Contact value="10" type1="Prolif_cell" type2="Prolif_cell"/>
+            <Contact value="10" type1="Prolif_cell" type2="Quiesc_cell"/>
+            <Contact value="10" type1="Quiesc_cell" type2="Quiesc_cell"/>
+            <Contact value="6" type1="Prolif_cell" type2="medium"/>
+            <Contact value="6" type1="Quiesc_cell" type2="medium"/>
+        </Interaction>
+        <MonteCarloSampler stepper="edgelist">
+            <MCSDuration value="0.2"/>
+            <Neighborhood>
+                <Order>1</Order>
+            </Neighborhood>
+            <MetropolisKinetics yield="0.1" temperature="3"/>
+        </MonteCarloSampler>
+        <ShapeSurface scaling="norm">
+            <Neighborhood>
+                <Order>2</Order>
+            </Neighborhood>
+        </ShapeSurface>
+    </CPM>
+    <CellPopulations>
+        <Population type="Prolif_cell" size="1">
+            <!--    <Disabled>
+        <InitCircle number-of-cells="2826" mode="random">
+            <Dimensions center="250, 250, 0" radius="L_init"/>
+        </InitCircle>
+    </Disabled>
+-->
+            <InitProperty symbol-ref="prolif">
+                <Expression>1 - (rand_uni(0,1) &lt; q_init)</Expression>
+            </InitProperty>
+            <InitCircle number-of-cells="N_init" mode="random">
+                <Dimensions center="size.x/2,size.y/2,0" radius="L_init"/>
+            </InitCircle>
+        </Population>
+    </CellPopulations>
+    <Analysis>
+        <!--    <Disabled>
+        <Gnuplotter time-step="10">
+            <Terminal size="2560,1440,0" name="png"/>
+            <Plot>
+                <Disabled>
+                    <Cells value="cell.type">
+                        <Disabled>
+                            <ColorMap>
+                                <Color value="0" color="light-green"/>
+                                <Color value="1" color="light-blue"/>
+                                <Color value="2" color="red"/>
+                                <Color value="3" color="black"/>
+                            </ColorMap>
+                        </Disabled>
+                    </Cells>
+                </Disabled>
+                <Field symbol-ref="cell.type">
+                    <ColorMap>
+                        <Color value="0" color="white"/>
+                        <Color value="1" color="yellow"/>
+                        <Color value="2" color="red"/>
+                    </ColorMap>
+                </Field>
+            </Plot>
+            <Plot>
+                <Field symbol-ref="e"/>
+            </Plot>
+        </Gnuplotter>
+    </Disabled>
+-->
+        <Logger time-step="480">
+            <Input>
+                <Symbol symbol-ref="celltype.Prolif_cell.size"/>
+                <Symbol symbol-ref="celltype.Quiesc_cell.size"/>
+                <Symbol symbol-ref="cell.volume"/>
+                <Symbol symbol-ref="R"/>
+            </Input>
+            <Output>
+                <TextOutput/>
+            </Output>
+            <!--    <Disabled>
+        <Plots>
+            <Plot time-step="20">
+                <Style style="linespoints" point-size="0.5" grid="true"/>
+                <Terminal terminal="png"/>
+                <X-axis maximum="stoptime" minimum="0">
+                    <Symbol symbol-ref="time"/>
+                </X-axis>
+                <Y-axis>
+                    <Symbol symbol-ref="celltype.Prolif_cell.size"/>
+                    <Symbol symbol-ref="celltype.Quiesc_cell.size"/>
+                </Y-axis>
+            </Plot>
+        </Plots>
+    </Disabled>
+-->
+        </Logger>
+        <!--    <Disabled>
+        <ModelGraph reduced="false" format="svg" include-tags="#untagged,new"/>
+    </Disabled>
+-->
+        <!--    <Disabled>
+        <Logger time-step="1.0">
+            <Input>
+                <Disabled>
+                    <Symbol symbol-ref="L"/>
+                </Disabled>
+                <Disabled>
+                    <Symbol symbol-ref="L_div"/>
+                </Disabled>
+                <Disabled>
+                    <Symbol symbol-ref="cell.id"/>
+                </Disabled>
+                <Disabled>
+                    <Symbol symbol-ref="e_cell"/>
+                </Disabled>
+                <Disabled>
+                    <Symbol symbol-ref="ka"/>
+                </Disabled>
+                <Disabled>
+                    <Symbol symbol-ref="l_cell"/>
+                </Disabled>
+                <Disabled>
+                    <Symbol symbol-ref="nwo"/>
+                </Disabled>
+            </Input>
+            <Output>
+                <TextOutput/>
+            </Output>
+        </Logger>
+    </Disabled>
+-->
+        <Logger time-step="480">
+            <Input>
+                <Symbol symbol-ref="R"/>
+            </Input>
+            <Output>
+                <TextOutput/>
+            </Output>
+            <Plots>
+                <Plot>
+                    <Style style="linespoints" point-size="0.5" line-width="1.0" decorate="true" grid="true"/>
+                    <Terminal terminal="png"/>
+                    <X-axis maximum="stoptime" minimum="0">
+                        <Symbol symbol-ref="time"/>
+                    </X-axis>
+                    <Y-axis maximum="900.0" minimum="0.0">
+                        <Symbol symbol-ref="R"/>
+                    </Y-axis>
+                </Plot>
+            </Plots>
+        </Logger>
+    </Analysis>
+</MorpheusModel>

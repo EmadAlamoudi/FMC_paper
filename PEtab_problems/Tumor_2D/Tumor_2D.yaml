@@ -1,0 +1,13 @@
+format_version: 1
+parameter_file: parameters_Tumor2D.tsv
+problems:
+- condition_files:
+  - experimentalCondition_Tumor2D.tsv
+  measurement_files:
+  - measurementData_Tumor2D.tsv
+  observable_files:
+  - observables_Tumor2D.tsv
+  model_files:
+  - Tumour_Spheroid_ScenI_1e.xml
+  objective_file:
+  - objective_function.py;obj_func

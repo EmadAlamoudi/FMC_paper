@@ -1,0 +1,14 @@
+parameterId	parameterName	parameterScale	lowerBound	upperBound	nominalValue	par_map	estimate	objectivePriorType	objectivePriorParameters
+PS_tar	PS_tar	lin	0	100	30	./Global/Constant[@symbol="PS_tar"]	1	parameterScaleUniform
+DT_tar	DT_tar	lin	0	0	15	./Global/Constant[@symbol="DT_tar"]	1	parameter_value_discrete	np.arange(60);[1/60]*60
+PS_inf	PS_inf	lin	0	100	30	./Global/Constant[@symbol="PS_inf"]	1	parameterScaleUniform
+DT_inf	DT_inf	lin	0	0	15	./Global/Constant[@symbol="DT_inf"]	1	parameter_value_discrete	np.arange(60);[1/60]*60
+JTT	JTT	lin	0	500	400.74	./Global/Constant[@symbol="JTT"]	1	parameterScaleUniform
+JTI	JTI	lin	0	500	279.90	./Global/Constant[@symbol="JTI"]	1	parameterScaleUniform
+JIM	JIM	lin	0	500	368.05	./Global/Constant[@symbol="JIM"]	1	parameterScaleUniform
+JTM	JTM	lin	0	500	311.32	./Global/Constant[@symbol="JTM"]	1	parameterScaleUniform
+JTC	JTC	lin	0	500	364.56	./Global/Constant[@symbol="JTC"]	1	parameterScaleUniform
+JIC	JIC	lin	0	500	442.31	./Global/Constant[@symbol="JIC"]	1	parameterScaleUniform
+JII	JII	lin	0	500	66.38	./Global/Constant[@symbol="JII"]	1	parameterScaleUniform
+C_scs	C_scs	lin	0	100	145.86	./Global/Constant[@symbol="C_scs"]	1	parameterScaleUniform
+C_vcs	C_vcs	lin	0	100	201.05	./Global/Constant[@symbol="C_vcs"]	1	parameterScaleUniform

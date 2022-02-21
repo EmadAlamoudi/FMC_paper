@@ -1,0 +1,13 @@
+format_version: 1
+parameter_file: parameters_Meyer_MolSystBiol_2020.tsv
+problems:
+- condition_files:
+  - experimentalCondition_Meyer_MolSystBiol_2020.tsv
+  measurement_files:
+  - measurementData_Meyer_MolSystBiol_2020.tsv
+  observable_files:
+  - observables_Meyer_MolSystBiol_2020.tsv
+  model_files:
+  - YAP_Signaling_Liver_Regeneration_Model_reparametrized_further.xml
+  objective_file:
+  - Objective_function.py;eucl_dist

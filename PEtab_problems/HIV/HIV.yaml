@@ -1,0 +1,13 @@
+format_version: 1
+parameter_file: parameters_HIV.tsv
+problems:
+- condition_files:
+  - experimentalCondition_HIV.tsv
+  measurement_files:
+  - measurementData_HIV.tsv
+  observable_files:
+  - observables_HIV.tsv
+  model_files:
+  - HIV_2D_model.xml
+  objective_file:
+  - objective_function.py;obj_func

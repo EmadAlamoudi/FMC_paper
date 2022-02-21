@@ -1,0 +1,3 @@
+observableId	observableName	observableFormula
+condition1__YAP_nuclear_observable	condition1__YAP_nuclear_observable,	Observable_function.py;main
+condition1__YAP_total_observable	condition1__YAP_total_observable	Observable_function.py;main

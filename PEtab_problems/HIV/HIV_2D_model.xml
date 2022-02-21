@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<MorpheusModel version="4">
+    <Description>
+        <Details></Details>
+        <Title>NoInfection_Loose_Collagen</Title>
+    </Description>
+    <Space>
+        <Lattice class="square">
+            <Neighborhood>
+                <Order>2</Order>
+            </Neighborhood>
+            <Size symbol="size" value="800, 800, 0"/>
+            <BoundaryConditions>
+                <Condition type="periodic" boundary="x"/>
+                <Condition type="periodic" boundary="y"/>
+            </BoundaryConditions>
+        </Lattice>
+        <SpaceSymbol symbol="space"/>
+    </Space>
+    <Time>
+        <StartTime value="0"/>
+        <StopTime value="3900"/>
+        <TimeSymbol symbol="time"/>
+    </Time>
+    <Analysis>
+        <DependencyGraph format="svg" include-tags="#untagged" reduced="false"/>
+        <Logger name="target_tracker" time-step="30">
+            <Input>
+                <Symbol symbol-ref="cell.center.x"/>
+                <Symbol symbol-ref="cell.center.y"/>
+            </Input>
+            <Output>
+                <TextOutput file-name="target_tracker"/>
+            </Output>
+            <Restriction>
+                <Celltype celltype="target"/>
+            </Restriction>
+        </Logger>
+        <Logger name="infected_tracker" time-step="30">
+            <Input>
+                <Symbol symbol-ref="cell.center.x"/>
+                <Symbol symbol-ref="cell.center.y"/>
+            </Input>
+            <Output>
+                <TextOutput file-name="infected_tracker"/>
+            </Output>
+            <Restriction>
+                <Celltype celltype="infected"/>
+            </Restriction>
+        </Logger>
+        <!--    <Disabled>
+        <Gnuplotter time-step="30">
+            <Plot>
+                <Cells>
+                    <ColorMap>
+                        <Color color="red" value="1"/>
+                        <Color color="green" value="2"/>
+                        <Color color="gray" value="3"/>
+                    </ColorMap>
+                </Cells>
+            </Plot>
+            <Terminal name="png"/>
+        </Gnuplotter>
+    </Disabled>
+-->
+    </Analysis>
+    <Global>
+        <Constant symbol="C_scs" value="145.86"/>
+        <Constant symbol="C_vcs" value="201.05"/>
+        <Constant symbol="DT_inf" value="15"/>
+        <Constant symbol="DT_tar" value="15"/>
+        <Constant symbol="PS_inf" value="30"/>
+        <Constant symbol="PS_tar" value="30"/>
+        <Constant symbol="temp" value="30"/>
+        <Constant symbol="JTT" value="400.74"/>
+        <Constant symbol="JII" value="66.38"/>
+        <Constant symbol="JTI" value="279.90"/>
+        <Constant symbol="JTC" value="364.56"/>
+        <Constant symbol="JIC" value="442.31"/>
+        <Constant symbol="JTM" value="311.32"/>
+        <Constant symbol="JIM" value="368.05"/>
+    </Global>
+    <CellTypes>
+        <CellType name="medium" class="medium"/>
+        <CellType name="target" class="biological">
+            <ConnectivityConstraint/>
+            <VolumeConstraint strength="50" target="100"/>
+            <SurfaceConstraint strength="7.144" mode="aspherity" target="0.7142"/>
+            <PersistentMotion strength="PS_tar" protrusion="true" decay-time="DT_tar"/>
+        </CellType>
+        <CellType name="infected" class="biological">
+            <ConnectivityConstraint/>
+            <VolumeConstraint strength="50" target="100"/>
+            <SurfaceConstraint strength="7.144" mode="aspherity" target="0.7142"/>
+            <PersistentMotion strength="PS_inf" protrusion="true" decay-time="DT_inf"/>
+        </CellType>
+        <CellType name="collagen" class="biological">
+            <VolumeConstraint strength="C_vcs" target="20"/>
+            <SurfaceConstraint strength="C_scs" mode="aspherity" target="0.2"/>
+        </CellType>
+    </CellTypes>
+    <CPM>
+        <Interaction>
+            <Contact type2="medium" type1="medium" value="0.0"/>
+            <Contact type2="target" type1="target" value="0.0">
+                <AddonAdhesion strength="1" adhesive="JTT"/>
+            </Contact>
+            <Contact type2="infected" type1="target" value="0.0">
+                <AddonAdhesion strength="1" adhesive="JTI"/>
+            </Contact>
+            <Contact type2="infected" type1="infected" value="0.0">
+                <AddonAdhesion strength="1" adhesive="JII"/>
+            </Contact>
+            <Contact type2="medium" type1="target" value="0.0">
+                <AddonAdhesion strength="1" adhesive="JTM"/>
+            </Contact>
+            <Contact type2="medium" type1="infected" value="0.0">
+                <AddonAdhesion strength="1" adhesive="JIM"/>
+            </Contact>
+            <Contact type2="collagen" type1="collagen" value="0.0"/>
+            <Contact type2="medium" type1="collagen" value="0.0"/>
+            <Contact type2="collagen" type1="target" value="0.0">
+                <AddonAdhesion strength="1" adhesive="JTC"/>
+            </Contact>
+            <Contact type2="collagen" type1="infected" value="0.0">
+                <AddonAdhesion strength="1" adhesive="JIC"/>
+            </Contact>
+        </Interaction>
+        <ShapeSurface scaling="norm">
+            <Neighborhood>
+                <Order>2</Order>
+            </Neighborhood>
+        </ShapeSurface>
+        <MonteCarloSampler stepper="edgelist">
+            <MCSDuration value="1"/>
+            <MetropolisKinetics temperature="temp"/>
+            <Neighborhood>
+                <Order>2</Order>
+            </Neighborhood>
+        </MonteCarloSampler>
+    </CPM>
+    <CellPopulations>
+        <Population type="target" size="1">
+            <InitRectangle number-of-cells="150" mode="random">
+                <Dimensions size="size.x, size.y, size.z" origin="0.0, 0.0, 0.0"/>
+            </InitRectangle>
+        </Population>
+        <Population type="infected" size="1">
+            <InitRectangle number-of-cells="150" mode="random">
+                <Dimensions size="size.x, size.y, size.z" origin="0.0, 0.0, 0.0"/>
+            </InitRectangle>
+        </Population>
+        <Population type="collagen" size="1">
+            <InitRectangle number-of-cells="14400" mode="random">
+                <Dimensions size="size.x, size.y, size.z" origin="0.0, 0.0, 0.0"/>
+            </InitRectangle>
+        </Population>
+    </CellPopulations>
+</MorpheusModel>
